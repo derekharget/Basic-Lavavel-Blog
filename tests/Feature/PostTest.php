@@ -68,4 +68,25 @@ class PostTest extends TestCase
 
 
     }
+
+
+    // public function testUpdateValid()
+    // {
+    //     $post = new BlogPost();
+    //     $post->title = "New title";
+    //     $post->content = "content of blog post";
+    //     $post->save();
+
+    //     $this->assertDatabaseHas('blog_posts', $post->toArray());
+    // }
+
+    // public function testDelete(){
+
+    //     $post = new BlogPost();
+    //     $post->title = 'New title';
+    //     $post->content = 'Content of the blog post';
+    //     $post->save();
+
+    //     return $post;
+    // }
 }
