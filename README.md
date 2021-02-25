@@ -1,2 +1,2 @@
 # blog
- Laravel Blog with Vue
+ Laravel Blog with Bootstrap.
