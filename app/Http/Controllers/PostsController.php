@@ -11,6 +11,11 @@ class PostsController extends Controller
 {
 
 
+        public function __construct()
+        {
+            $this->middleware('auth')
+                ->only(['create', 'store', 'edit', 'update', 'destroy']);
+        }
 
     /**
      * Display a listing of the resource.
@@ -73,7 +78,12 @@ class PostsController extends Controller
     {
             //  abort_if(!isset($this->posts[$id]), 404);
     
-            return view('posts.show', ['post' => BlogPost::findOrFail($id)]);
+            return view('posts.show', [
+                'post' => BlogPost::findOrFail($id)
+                
+                
+                
+                ]);
     }
 
     /**

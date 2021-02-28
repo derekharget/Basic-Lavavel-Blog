@@ -16,7 +16,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [HomeController::class, 'home'])->name('home.index');
+Route::get('/', [HomeController::class, 'home'])->name('home.index')
+// ->middleware('auth')
+;
 
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact.index');
 
@@ -68,28 +70,30 @@ Route::get('/recent-posts/{days_age?}', function($daysAge = 20){
 })->name('posts.recent.index');
 
 
+Auth::routes();
 
-Route::prefix('/fun')->name('fun.')->group(function() use($posts){
-    Route::get('/responses', function () use($posts){
-        return response($posts, 201)
-        ->header('Content-Type', 'application/json')
-        ->cookie('MY_COOKIE','Piotr Jura', 3600);
-    })->name('responses');
+// Route::prefix('/fun')->name('fun.')->group(function() use($posts){
+//     Route::get('/responses', function () use($posts){
+//         return response($posts, 201)
+//         ->header('Content-Type', 'application/json')
+//         ->cookie('MY_COOKIE','Piotr Jura', 3600);
+//     })->name('responses');
 
-    Route::get('/back', function () {
-        return back();
-    })->name('back');
+//     Route::get('/back', function () {
+//         return back();
+//     })->name('back');
     
-    Route::get('/away', function () {
-        return redirect()->away('http://google.com/');
-    })->name('away');
+//     Route::get('/away', function () {
+//         return redirect()->away('http://google.com/');
+//     })->name('away');
     
-    Route::get('/json', function () use($posts) {
-        return response()->json($posts);
-    })->name('json');
+//     Route::get('/json', function () use($posts) {
+//         return response()->json($posts);
+//     })->name('json');
     
-    Route::get('/download', function () use($posts) {
-        return response()->download(public_path('/daniel.jpg'), 'face.jpg');
-    })->name('download');
+//     Route::get('/download', function () use($posts) {
+//         return response()->download(public_path('/daniel.jpg'), 'face.jpg');
+//     })->name('download');
 
-});
+
+// });

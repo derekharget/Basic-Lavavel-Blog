@@ -16,6 +16,19 @@
             <a class="p-2 text-dark" href="{{ route('contact.index') }}">Contact</a>
             <a class="p-2 text-dark" href="{{ route('posts.index') }}">Blog Posts</a>
             <a class="p-2 text-dark" href="{{ route('posts.create') }}">Add Blog Post</a>
+
+            @guest
+            <a class="p-2 text-dark" href="{{ route('register') }}">Register</a>
+            <a class="p-2 text-dark" href="{{ route('login') }}">Login</a>
+                
+            @else
+                <a class="p-2 text-dark" href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">Logout ({{ Auth::user()->name }})</a>
+
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
+                
+                </form>
+            @endguest
  
         </nav>
     </div>
