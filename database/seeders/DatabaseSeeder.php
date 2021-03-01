@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
         $users = $otherUsers->concat($defaultUser);
 
 
-        $posts = \App\Models\BlogPost::factory(50)->make()->each(function($post) use ($users) {
+        $posts = \App\Models\BlogPost::factory(30)->make()->each(function($post) use ($users) {
             $post->user_id = $users->random()->id;
             $post->save();
 
