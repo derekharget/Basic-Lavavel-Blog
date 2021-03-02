@@ -41,7 +41,7 @@ class DatabaseSeeder extends Seeder
 
         });
 
-        $comments = \App\Models\Comment::factory(200)->make()->each(function($comment) use ($posts) {
+        $comments = \App\Models\Comment::factory(150)->make()->each(function($comment) use ($posts) {
             $comment->blog_post_id = $posts->random()->id;
             $comment->save();
 

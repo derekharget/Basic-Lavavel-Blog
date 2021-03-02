@@ -13,6 +13,11 @@ class BlogPostTableSeeder extends Seeder
      */
     public function run()
     {
-        //
+        // $users = Users::all();
+        // \App\Models\BlogPost::factory(50)->make()->each(function($post) use ($users) {
+        //     $post->user_id = $users->random()->id;
+        //     $post->save();
+
+        // });
     }
 }
