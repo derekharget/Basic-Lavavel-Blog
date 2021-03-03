@@ -46,6 +46,7 @@ class PostsController extends Controller
      */
     public function create()
     {
+        // $this->authorize('posts.create');
         return view('posts.create');
     }
 
@@ -97,10 +98,11 @@ class PostsController extends Controller
     {
         $post = BlogPost::findOrFail($id);
 
-        if(Gate::denies('update-post', $post))
-        {
-            abort(403, 'You cannot edit this blog post!');
-        }
+        // if(Gate::denies('update-post', $post))
+        // {
+        //     abort(403, 'You cannot edit this blog post!');
+        // }
+        $this->authorize('update', $post);
 
         return view('posts.edit', ['post' => $post]);
     }
@@ -121,7 +123,7 @@ class PostsController extends Controller
         //     abort(403, 'You cannot edit this blog post!');
         // }
 
-        $this->authorize('update-post', $post);
+        $this->authorize('update', $post);
 
         $validated = $request->validated(); 
         $post->fill($validated);
@@ -147,7 +149,7 @@ class PostsController extends Controller
         //     abort(403, 'You cannot delete this blog post!');
         // }
 
-        $this->authorize('delete-post', $post);
+        $this->authorize('delete', $post);
 
         $post->delete();
 

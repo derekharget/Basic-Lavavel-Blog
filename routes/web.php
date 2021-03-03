@@ -22,6 +22,8 @@ Route::get('/', [HomeController::class, 'home'])->name('home.index')
 
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact.index');
 
+Route::get('/secret', [HomeController::class, 'secret'])->name('secret')->middleware('can:home.secret');
+
 Route::get('/single', AboutController::class);
 
 
