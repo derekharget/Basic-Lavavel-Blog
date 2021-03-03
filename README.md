@@ -1,2 +1,3 @@
-# blog
- Laravel Blog with Bootstrap.
+# Laravel Blog
+Basic Laravel blog.
+
