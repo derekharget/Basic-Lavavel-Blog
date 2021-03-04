@@ -36,7 +36,9 @@ class PostsController extends Controller
         // }
         // dd(DB::getQueryLog());
         return view('posts.index',
-        ['posts' => BlogPost::withCount('comments')->get()]);
+        ['posts' => BlogPost::withCount('comments')
+        // ->orderBy('created_at', 'desc')
+        ->get()]);
     }
 
     /**
@@ -59,6 +61,7 @@ class PostsController extends Controller
     public function store(StorePost $request)
     {
         $validated = $request->validated();
+        $validated['user_id'] = $request->user()->id;
         $post = BlogPost::create($validated);
 
 
