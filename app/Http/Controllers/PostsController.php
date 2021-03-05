@@ -36,9 +36,11 @@ class PostsController extends Controller
         // }
         // dd(DB::getQueryLog());
         return view('posts.index',
-        ['posts' => BlogPost::withCount('comments')
-        // ->orderBy('created_at', 'desc')
-        ->get()]);
+            ['posts' => BlogPost::latest()->withCount('comments')
+            // ->orderBy('created_at', 'desc')
+            ->get(),
+            'mostCommented' => BlogPost::mostCommented()->take(5)->get(),
+            ]);
     }
 
     /**
@@ -84,11 +86,14 @@ class PostsController extends Controller
             //  abort_if(!isset($this->posts[$id]), 404);
     
             return view('posts.show', [
-                'post' => BlogPost::findOrFail($id)
-                
-                
-                
+                'post' => BlogPost::with('comments')->findOrFail($id)
                 ]);
+
+                // return view('posts.show', [
+                //     'post' => BlogPost::with(['comments' => function ($query) {
+                //         return $query->latest();
+                //     }])->findOrFail($id)
+                //     ]);
     }
 
     /**
