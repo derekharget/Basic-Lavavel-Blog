@@ -7,6 +7,7 @@ use App\Models\BlogPost;
 use Illuminate\Http\Request;
 // use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use App\Models\User;
 
 class PostsController extends Controller
 {
@@ -40,6 +41,7 @@ class PostsController extends Controller
             // ->orderBy('created_at', 'desc')
             ->get(),
             'mostCommented' => BlogPost::mostCommented()->take(5)->get(),
+            // 'mostActive' => User::withMostBlogPosts()->take(5)->get(),
             ]);
     }
 
