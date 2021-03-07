@@ -1,10 +1,5 @@
 <?php
 
-use App\Http\Controllers\AboutController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\PostsController;
-use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,86 +11,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [HomeController::class, 'home'])->name('home.index')
-// ->middleware('auth')
-;
-
-Route::get('/contact', [HomeController::class, 'contact'])->name('contact.index');
-
-Route::get('/secret', [HomeController::class, 'secret'])->name('secret')->middleware('can:home.secret');
-
-Route::get('/single', AboutController::class);
-
-
-$posts = [
-    1 => [
-        'title' => 'Intro to Laravel',
-        'content' => 'This is a short intro to Laravel',
-        'is_new' => true,
-        'has_comments' => true
-    ],
-    2 => [
-        'title' => 'Intro to PHP',
-        'content' => 'This is a short intro to PHP',
-        'is_new' => false
-    ],
-    3 => [
-        'title' => 'Intro to Golang',
-        'content' => 'this is a short intro to golang',
-        'is_new' => false
-    ]
-];
-
-Route::resource('posts', PostsController::class);
-        // ->only(['index', 'show', 'create', 'store', 'edit', 'update']);
-
-// Route::get('/posts', function () use($posts) {
-//     // dd(request()->all());
-//     dd((int)request()->input('page', 1));
-
-
-//     return view('posts.index',['posts' => $posts]);
-    
-// });
-
-// Route::get('/posts/{id}', function ($id) use($posts){
-
-//     abort_if(!isset($posts[$id]), 404);
-    
-//     return view('posts.show', ['post' => $posts[$id]]);
-
-// })->name('posts.show');
-
-
-Route::get('/recent-posts/{days_age?}', function($daysAge = 20){
-    return 'Posts from '.$daysAge.' days ago';
-})->name('posts.recent.index');
-
+Route::get('/', 'HomeController@home')
+  ->name('home')
+  // ->middleware('auth')
+  ;
+Route::get('/contact', 'HomeController@contact')->name('contact');
+Route::get('/secret', 'HomeController@secret')
+  ->name('secret')
+  ->middleware('can:home.secret');
+Route::resource('/posts', 'PostController');
 
 Auth::routes();
-
-// Route::prefix('/fun')->name('fun.')->group(function() use($posts){
-//     Route::get('/responses', function () use($posts){
-//         return response($posts, 201)
-//         ->header('Content-Type', 'application/json')
-//         ->cookie('MY_COOKIE','Piotr Jura', 3600);
-//     })->name('responses');
-
-//     Route::get('/back', function () {
-//         return back();
-//     })->name('back');
-    
-//     Route::get('/away', function () {
-//         return redirect()->away('http://google.com/');
-//     })->name('away');
-    
-//     Route::get('/json', function () use($posts) {
-//         return response()->json($posts);
-//     })->name('json');
-    
-//     Route::get('/download', function () use($posts) {
-//         return response()->download(public_path('/daniel.jpg'), 'face.jpg');
-//     })->name('download');
-
-
-// });
