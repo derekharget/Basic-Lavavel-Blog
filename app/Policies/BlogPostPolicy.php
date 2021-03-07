@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\BlogPost;
-use App\Models\User;
+use App\User;
+use App\BlogPost;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class BlogPostPolicy
@@ -11,21 +11,10 @@ class BlogPostPolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view any models.
+     * Determine whether the user can view the blog post.
      *
-     * @param  \App\Models\User  $user
-     * @return mixed
-     */
-    public function viewAny(User $user)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can view the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\BlogPost  $blogPost
+     * @param  \App\User  $user
+     * @param  \App\BlogPost  $blogPost
      * @return mixed
      */
     public function view(User $user, BlogPost $blogPost)
@@ -34,47 +23,45 @@ class BlogPostPolicy
     }
 
     /**
-     * Determine whether the user can create models.
+     * Determine whether the user can create blog posts.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\User  $user
      * @return mixed
      */
     public function create(User $user)
     {
-        // return true;
+        //
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Determine whether the user can update the blog post.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\BlogPost  $blogPost
+     * @param  \App\User  $user
+     * @param  \App\BlogPost  $blogPost
      * @return mixed
      */
     public function update(User $user, BlogPost $blogPost)
     {
-        // dd('post update');
         return $user->id == $blogPost->user_id;
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Determine whether the user can delete the blog post.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\BlogPost  $blogPost
+     * @param  \App\User  $user
+     * @param  \App\BlogPost  $blogPost
      * @return mixed
      */
     public function delete(User $user, BlogPost $blogPost)
     {
-        // dd('post delete');
         return $user->id == $blogPost->user_id;
     }
 
     /**
-     * Determine whether the user can restore the model.
+     * Determine whether the user can restore the blog post.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\BlogPost  $blogPost
+     * @param  \App\User  $user
+     * @param  \App\BlogPost  $blogPost
      * @return mixed
      */
     public function restore(User $user, BlogPost $blogPost)
@@ -83,10 +70,10 @@ class BlogPostPolicy
     }
 
     /**
-     * Determine whether the user can permanently delete the model.
+     * Determine whether the user can permanently delete the blog post.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\BlogPost  $blogPost
+     * @param  \App\User  $user
+     * @param  \App\BlogPost  $blogPost
      * @return mixed
      */
     public function forceDelete(User $user, BlogPost $blogPost)

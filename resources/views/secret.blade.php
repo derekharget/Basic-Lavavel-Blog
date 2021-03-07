@@ -1,9 +1,6 @@
-@extends('layouts.app')
-
-@section('title', "secret page")
-    
+@extends('layout')
 
 @section('content')
-    <h1>secret page</h1>
-    <p>This is a secret email</p>
+  <h1>Secret Page!</h1>
+  <p>This is a secret email secre@laravel.test</p>
 @endsection

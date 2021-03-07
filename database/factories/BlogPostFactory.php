@@ -1,38 +1,17 @@
 <?php
 
-namespace Database\Factories;
+use Faker\Generator as Faker;
 
-use App\Models\BlogPost;
-use Illuminate\Database\Eloquent\Factories\Factory;
+$factory->define(App\BlogPost::class, function (Faker $faker) {
+    return [
+        'title' => $faker->sentence(10),
+        'content' => $faker->paragraphs(5, true),
+        'created_at' => $faker->dateTimeBetween('-3 months'),
+    ];
+});
 
-class BlogPostFactory extends Factory
-{
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
-    protected $model = BlogPost::class;
-
-    /**
-     * Define the model's default state.
-     *
-     * @return array
-     */
-    public function definition()
-    {
-        return [
-            'title' => $this->faker->sentence(10),
-            'content' => $this->faker->paragraphs(5, true),
-            'created_at' => $this->faker->dateTimeBetween('-3 months'),
-        ];
-    }
-}
-
-// $factory->state(App\BlogPost::class, 'new-title', function (Faker $faker) {
-//     return [
-//         'title' => 'New Title',
-//         'content' => 'Content of blog post'
-
-//     ];
-// });
+$factory->state(App\BlogPost::class, 'new-title', function (Faker $faker) {
+    return [
+        'title' => 'New title',
+    ];
+});
