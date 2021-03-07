@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\BlogPost;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Database\Schema\Builder as SchemaBuilder;
 
 class User extends Authenticatable
 {
@@ -53,4 +55,12 @@ class User extends Authenticatable
         return $query->withCount('blogPosts')->orderBy('blog_posts_count', 'desc');
 
     }
+
+    // public function scopeWithMostBlogPostsLastMonth(Builder $query)
+    // {
+    //     return $query->withCount(['blogPosts' => function (Builder $query) {
+    //         $query->whereBetween(static::CREATED_AT, [now()->subMonths(1), now()]);
+    //     }])->having('blog_posts_count', '>=', 2)
+    //        ->orderBy('blog_posts_count', 'desc');
+    // }
 }
