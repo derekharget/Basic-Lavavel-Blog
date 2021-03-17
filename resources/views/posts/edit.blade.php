@@ -2,12 +2,13 @@
 
 @section('content')
     <form method="POST" 
-          action="{{ route('posts.update', ['post' => $post->id]) }}">
+          action="{{ route('posts.update', ['post' => $post->id]) }}"
+          enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
         @include('posts._form')
 
-        <button type="submit" class="btn btn-primary btn-block">Update!</button>
+        <button type="submit" class="btn btn-primary btn-block">{{ __('Update!') }}</button>
     </form>
 @endsection

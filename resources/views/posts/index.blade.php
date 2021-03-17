@@ -16,19 +16,19 @@
                 @endif
             </h3>
 
-            @updated(['date' => $post->created_at, 'name' => $post->user->name])
+            @updated(['date' => $post->created_at, 'name' => $post->user->name, 'userId' => $post->user->id])
             @endupdated
 
-            @if($post->comments_count)
-                <p>{{ $post->comments_count }} comments</p>
-            @else
-                <p>No comments yet!</p>
-            @endif
+            @tags(['tags' => $post->tags])@endtags
+            <p>
+                {{ trans_choice('messages.comments', $post->comments_count) }}
+            </p>
+
             @auth
                 @can('update', $post)
                     <a href="{{ route('posts.edit', ['post' => $post->id]) }}"
                         class="btn btn-primary">
-                        Edit
+                        {{ __('Edit') }}
                     </a>
                 @endcan
             @endauth
@@ -36,7 +36,8 @@
             {{-- @cannot('delete', $post)
                 <p>You can't delete this post</p>
             @endcannot --}}
-            @auth    
+
+            @auth
                 @if(!$post->trashed())
                     @can('delete', $post)
                         <form method="POST" class="fm-inline"
@@ -44,53 +45,18 @@
                             @csrf
                             @method('DELETE')
 
-                            <input type="submit" value="Delete!" class="btn btn-primary"/>
+                            <input type="submit" value="{{ __('Delete!') }}" class="btn btn-primary"/>
                         </form>
                     @endcan
                 @endif
             @endauth
         </p>
     @empty
-        <p>No blog posts yet!</p>
+        <p>{{ __('No blog posts yet!') }}</p>
     @endforelse
     </div>
     <div class="col-4">
-        <div class="container">
-            <div class="row">
-                @card(['title' => 'Most Commented'])
-                    @slot('subtitle')
-                        What people are currently talking about
-                    @endslot
-                    @slot('items')
-                        @foreach ($mostCommented as $post)
-                            <li class="list-group-item">
-                                <a href="{{ route('posts.show', ['post' => $post->id]) }}">
-                                    {{ $post->title }}
-                                </a>
-                            </li>
-                        @endforeach
-                    @endslot
-                @endcard
-            </div>
-
-            <div class="row mt-4">
-                @card(['title' => 'Most Active'])
-                    @slot('subtitle')
-                        Writers with most posts written
-                    @endslot
-                    @slot('items', collect($mostActive)->pluck('name'))
-                @endcard
-            </div>
-
-            <div class="row mt-4">
-                @card(['title' => 'Most Active Last Month'])
-                    @slot('subtitle')
-                        Users with most posts written in the month
-                    @endslot
-                    @slot('items', collect($mostActiveLastMonth)->pluck('name'))
-                @endcard
-            </div>
-        </div>
+        @include('posts._activity')
     </div>
 </div>    
 @endsection('content')
