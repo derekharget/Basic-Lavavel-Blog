@@ -3,10 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\BlogPost;
+use App\Contracts\CounterContract;
+use App\Events\BlogPostPosted;
 use App\Http\Requests\StorePost;
 use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
+use App\Image;
+use App\Services\Counter;
 
 // [
 //     'show' => 'view',
@@ -18,10 +23,15 @@ use Illuminate\Support\Facades\Cache;
 // ]
 class PostController extends Controller
 {
-    public function __construct()
+
+    private $counter;
+
+    public function __construct(CounterContract $counter)
     {
         $this->middleware('auth')
             ->only(['create', 'store', 'edit', 'update', 'destroy']);
+            // $this->middleware('locale');
+            $this->counter = $counter;
     }
 
     /**
@@ -31,25 +41,10 @@ class PostController extends Controller
      */
     public function index()
     {
-        $mostCommented = Cache::tags(['blog-post'])->remember('mostCommented', 60, function() {
-            return BlogPost::mostCommented()->take(5)->get();
-        });
-
-        $mostActive = Cache::remember('mostActive', 60, function() {
-            return User::withMostBlogPosts()->take(5)->get();
-        });
-
-        $mostActiveLastMonth = Cache::remember('mostActiveLastMonth', 60, function() {
-            return User::withMostBlogPostsLastMonth()->take(5)->get();
-        });
-
         return view(
             'posts.index',
             [
-                'posts' => BlogPost::latest()->withCount('comments')->with('user')->get(),
-                'mostCommented' => $mostCommented,
-                'mostActive' => $mostActive,
-                'mostActiveLastMonth' => $mostActiveLastMonth,
+                'posts' => BlogPost::latestWithRelations()->get(),
             ]
         );
     }
@@ -69,47 +64,17 @@ class PostController extends Controller
         //     }])->findOrFail($id),
         // ]);
         $blogPost = Cache::tags(['blog-post'])->remember("blog-post-{$id}", 60, function() use($id) {
-            return BlogPost::with('comments')->findOrFail($id);
+            return BlogPost::with('comments', 'tags', 'user', 'comments.user')
+                ->findOrFail($id);
         });
 
-        $sessionId = session()->getId();
-        $counterKey = "blog-post-{$id}-counter";
-        $usersKey = "blog-post-{$id}-users";
+        // $counter = resolve(Counter::class);
 
-        $users = Cache::tags(['blog-post'])->get($usersKey, []);
-        $usersUpdate = [];
-        $diffrence = 0;
-        $now = now();
-
-        foreach ($users as $session => $lastVisit) {
-            if ($now->diffInMinutes($lastVisit) >= 1) {
-                $diffrence--;
-            } else {
-                $usersUpdate[$session] = $lastVisit;
-            }
-        }
-
-        if(
-            !array_key_exists($sessionId, $users)
-            || $now->diffInMinutes($users[$sessionId]) >= 1
-        ) {
-            $diffrence++;
-        }
-
-        $usersUpdate[$sessionId] = $now;
-        Cache::tags(['blog-post'])->forever($usersKey, $usersUpdate);
-
-        if (!Cache::tags(['blog-post'])->has($counterKey)) {
-            Cache::tags(['blog-post'])->forever($counterKey, 1);
-        } else {
-            Cache::tags(['blog-post'])->increment($counterKey, $diffrence);
-        }
-        
-        $counter = Cache::tags(['blog-post'])->get($counterKey);
+        // dd($this->counter);
 
         return view('posts.show', [
             'post' => $blogPost,
-            'counter' => $counter,
+            'counter' => $this->counter->increment("blog-post-{$id}", ['blog-post']),
         ]);
     }
 
@@ -124,6 +89,16 @@ class PostController extends Controller
         $validatedData = $request->validated();
         $validatedData['user_id'] = $request->user()->id;
         $blogPost = BlogPost::create($validatedData);
+
+        if ($request->hasFile('thumbnail')) {
+            $path = $request->file('thumbnail')->store('thumbnails');
+            $blogPost->image()->save(
+                Image::make(['path' => $path])
+            );
+        }
+
+        event(new BlogPostPosted($blogPost));
+
         $request->session()->flash('status', 'Blog post was created!');
 
         return redirect()->route('posts.show', ['post' => $blogPost->id]);
@@ -149,6 +124,21 @@ class PostController extends Controller
         $validatedData = $request->validated();
 
         $post->fill($validatedData);
+
+        if ($request->hasFile('thumbnail')) {
+            $path = $request->file('thumbnail')->store('thumbnails');
+
+            if ($post->image) {
+                Storage::delete($post->image->path);
+                $post->image->path = $path;
+                $post->image->save();
+            } else {
+                $post->image()->save(
+                    Image::make(['path' => $path])
+                );
+            }
+        }
+
         $post->save();
         $request->session()->flash('status', 'Blog post was updated!');
 

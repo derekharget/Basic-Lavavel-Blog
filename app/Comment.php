@@ -5,16 +5,24 @@ namespace App;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\Taggable;
 
 class Comment extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, Taggable;
 
-    // blog_post_id
-    public function blogPost()
+    protected $fillable = ['user_id', 'content'];
+
+    protected $hidden = ['deleted_at', 'commentable_type', 'commentable_id', 'user_id'];
+
+    public function commentable()
     {
-        // return $this->belongsTo('App\BlogPost', 'post_id', 'blog_post_id');
-        return $this->belongsTo('App\BlogPost');
+        return $this->morphTo();
+    }
+
+    public function user()
+    {
+        return $this->belongsTo('App\User');
     }
 
     public function scopeLatest(Builder $query)
@@ -22,10 +30,4 @@ class Comment extends Model
         return $query->orderBy(static::CREATED_AT, 'desc');
     }
 
-    public static function boot()
-    {
-        parent::boot();
-
-        // static::addGlobalScope(new LatestScope);
-    }
 }
