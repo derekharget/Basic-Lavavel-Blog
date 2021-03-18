@@ -28,7 +28,7 @@ class PostController extends Controller
 
     public function __construct(CounterContract $counter)
     {
-        $this->middleware('auth')
+        $this->middleware('auth:web')
             ->only(['create', 'store', 'edit', 'update', 'destroy']);
             // $this->middleware('locale');
             $this->counter = $counter;
