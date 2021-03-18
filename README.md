@@ -2,12 +2,15 @@
 
 To launch, 
 
-setup .env file
-php artisan key:generate
-composer install
-npm run dev
+<p>setup .env file</p>
+    
+<p>php artisan key:generate</p>
+    
+<p>composer install</p>
+    
+<p>npm run dev</p>
 
-php artisan serve
+<p>php artisan serve</p>
 
 
 This was created by following online tutorials and learning laravel. It shouldn't be used on a real site.
